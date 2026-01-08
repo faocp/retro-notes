@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO.EXE - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="desktop">
+        <div class="window">
+            <!-- Window Title Bar -->
+            <div class="title-bar">
+                <div class="title-bar-text">TODO.EXE</div>
+                <div class="title-bar-controls">
+                    <button class="title-bar-button" aria-label="Minimize">_</button>
+                    <button class="title-bar-button" aria-label="Maximize">□</button>
+                    <button class="title-bar-button" aria-label="Close">×</button>
+                </div>
+            </div>
+
+            <!-- Window Content -->
+            <div class="window-body">
+                <!-- Header Section -->
+                <header class="app-header">
+                    <h1 class="app-title">TASK MANAGER v1.0</h1>
+                    <p class="app-subtitle">C:\TASKS\TODO.EXE</p>
+                </header>
+
+                <!-- Add Todo Section -->
+                <section class="add-todo-section">
+                    <div class="input-group">
+                        <label for="todo-input" class="input-label">NEW TASK:</label>
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="todo-input"
+                                class="todo-input"
+                                placeholder="Enter task description..."
+                                maxlength="100"
+                                autocomplete="off"
+                            >
+                            <button id="add-btn" class="btn btn-primary">ADD</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats Section -->
+                <section class="stats-section">
+                    <div class="stats-box">
+                        <span class="stats-label">ACTIVE TASKS:</span>
+                        <span id="task-count" class="stats-value">0</span>
+                    </div>
+                </section>
+
+                <!-- Filter Section -->
+                <section class="filter-section">
+                    <div class="filter-group">
+                        <button id="filter-all" class="filter-btn active" data-filter="all">ALL</button>
+                        <button id="filter-active" class="filter-btn" data-filter="active">ACTIVE</button>
+                        <button id="filter-completed" class="filter-btn" data-filter="completed">COMPLETED</button>
+                    </div>
+                </section>
+
+                <!-- Todo List Section -->
+                <section class="todo-list-section">
+                    <div class="list-container">
+                        <ul id="todo-list" class="todo-list">
+                            <!-- Todo items will be dynamically inserted here -->
+                        </ul>
+                        <div id="empty-state" class="empty-state">
+                            <pre class="ascii-art">
+   _____
+  |     |
+  |  ☐  |
+  |_____|
+
+  NO TASKS
+
+ PRESS ADD
+ TO CREATE
+                            </pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Actions Section -->
+                <section class="actions-section">
+                    <button id="clear-completed-btn" class="btn btn-secondary">CLEAR COMPLETED</button>
+                </section>
+
+                <!-- Footer -->
+                <footer class="app-footer">
+                    <p class="footer-text">© 1985 RETRO COMPUTING CORP. | ALL RIGHTS RESERVED</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
