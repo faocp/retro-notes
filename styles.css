@@ -11,7 +11,7 @@
 }
 
 :root {
-    /* Retro Color Palette */
+    /* Light Theme - Retro Color Palette */
     --bg-desktop: #008080;
     --bg-window: #c0c0c0;
     --bg-titlebar: #000080;
@@ -28,6 +28,9 @@
     --border-dark: #000000;
     --border-mid-light: #dfdfdf;
     --border-mid-dark: #808080;
+
+    --input-focus: #ffffcc;
+    --item-hover: #f0f0f0;
 
     --shadow-inset: inset -1px -1px 0 var(--border-dark),
                     inset 1px 1px 0 var(--border-mid-dark),
@@ -52,6 +55,39 @@
     --space-md: 16px;
     --space-lg: 24px;
     --space-xl: 32px;
+}
+
+/* Dark Theme */
+body[data-theme="dark"] {
+    --bg-desktop: #1a1a1a;
+    --bg-window: #2d2d2d;
+    --bg-titlebar: #1a1a1a;
+    --bg-input: #1e1e1e;
+    --bg-button: #3a3a3a;
+    --bg-button-hover: #4a4a4a;
+    --bg-button-active: #2a2a2a;
+
+    --text-primary: #00ff00;
+    --text-inverse: #00ff00;
+    --text-muted: #008800;
+
+    --border-light: #4a4a4a;
+    --border-dark: #0a0a0a;
+    --border-mid-light: #3a3a3a;
+    --border-mid-dark: #2a2a2a;
+
+    --input-focus: #2a3a2a;
+    --item-hover: #2a2a2a;
+
+    --shadow-inset: inset -1px -1px 0 var(--border-dark),
+                    inset 1px 1px 0 var(--border-mid-dark),
+                    inset -2px -2px 0 var(--border-mid-dark),
+                    inset 2px 2px 0 var(--border-light);
+
+    --shadow-outset: inset -1px -1px 0 var(--border-mid-dark),
+                     inset 1px 1px 0 var(--border-light),
+                     inset -2px -2px 0 var(--border-dark),
+                     inset 2px 2px 0 var(--border-mid-light);
 }
 
 body {
@@ -147,6 +183,47 @@ body {
     color: var(--text-muted);
 }
 
+/* === THEME TOGGLE === */
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.theme-label {
+    font-size: var(--font-size-xs);
+    letter-spacing: 1px;
+}
+
+.theme-toggle-btn {
+    width: 40px;
+    height: 24px;
+    background: var(--bg-button);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xs);
+    transition: none;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-button-hover);
+}
+
+.theme-toggle-btn:active {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    background: var(--bg-button-active);
+}
+
+.theme-icon {
+    font-size: var(--font-size-md);
+}
+
 /* === ADD TODO SECTION === */
 .add-todo-section {
     margin-bottom: var(--space-lg);
@@ -181,7 +258,7 @@ body {
 }
 
 .todo-input:focus {
-    background: #ffffcc;
+    background: var(--input-focus);
 }
 
 /* === BUTTONS === */
@@ -315,7 +392,7 @@ body {
 }
 
 .todo-item:hover {
-    background: #f0f0f0;
+    background: var(--item-hover);
 }
 
 .todo-item.completed {

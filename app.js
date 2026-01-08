@@ -13,13 +13,17 @@ class TodoApp {
         this.clearCompletedBtn = document.getElementById('clear-completed-btn');
         this.emptyState = document.getElementById('empty-state');
         this.filterBtns = document.querySelectorAll('.filter-btn');
+        this.themeToggleBtn = document.getElementById('theme-toggle');
+        this.themeIcon = document.querySelector('.theme-icon');
 
         // State
         this.todos = [];
         this.currentFilter = 'all';
+        this.currentTheme = 'light';
 
         // Initialize
         this.loadTodos();
+        this.loadTheme();
         this.attachEventListeners();
         this.render();
     }
@@ -40,6 +44,9 @@ class TodoApp {
 
         // Clear completed todos
         this.clearCompletedBtn.addEventListener('click', () => this.clearCompleted());
+
+        // Theme toggle
+        this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
 
         // Filter buttons
         this.filterBtns.forEach(btn => {
@@ -242,6 +249,53 @@ class TodoApp {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    /**
+     * Toggle between light and dark theme
+     */
+    toggleTheme() {
+        this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        this.applyTheme();
+        this.saveTheme();
+    }
+
+    /**
+     * Apply the current theme to the document
+     */
+    applyTheme() {
+        if (this.currentTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            this.themeIcon.textContent = '☾';
+        } else {
+            document.body.removeAttribute('data-theme');
+            this.themeIcon.textContent = '☀';
+        }
+    }
+
+    /**
+     * Save theme preference to localStorage
+     */
+    saveTheme() {
+        try {
+            localStorage.setItem('retro-theme', this.currentTheme);
+        } catch (e) {
+            console.error('Failed to save theme:', e);
+        }
+    }
+
+    /**
+     * Load theme preference from localStorage
+     */
+    loadTheme() {
+        try {
+            const stored = localStorage.getItem('retro-theme');
+            this.currentTheme = stored || 'light';
+            this.applyTheme();
+        } catch (e) {
+            console.error('Failed to load theme:', e);
+            this.currentTheme = 'light';
+        }
     }
 }
 
