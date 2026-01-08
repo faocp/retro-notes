@@ -39,7 +39,7 @@
     /* Typography - Default: Pixelify Sans */
     --font-pixelify: "Pixelify Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --font-doto: "Doto", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --font-jacquard: "Jacquard 12", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-jersey: "Jersey 10", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --font-primary: var(--font-pixelify);
     --font-mono: var(--font-pixelify);
     --font-size-xs: 9px;
@@ -90,11 +90,12 @@ body[data-theme="dark"] {
 body[data-font="doto"] {
     --font-primary: var(--font-doto);
     --font-mono: var(--font-doto);
+    font-weight: 600;
 }
 
-body[data-font="jacquard"] {
-    --font-primary: var(--font-jacquard);
-    --font-mono: var(--font-jacquard);
+body[data-font="jersey"] {
+    --font-primary: var(--font-jersey);
+    --font-mono: var(--font-jersey);
 }
 
 body {
@@ -541,6 +542,19 @@ body[data-theme="dark"] .stats-value {
     font-size: var(--font-size-sm);
     font-weight: bold;
     color: var(--text-inverse);
+}
+
+/* Dark mode: improve checkbox visibility */
+body[data-theme="dark"] .todo-checkbox {
+    border-color: var(--text-muted);
+}
+
+body[data-theme="dark"] .todo-checkbox:hover {
+    border-color: var(--accent-color);
+}
+
+body[data-theme="dark"] .todo-checkbox.checked {
+    border-color: var(--accent-color);
 }
 
 .todo-content {
