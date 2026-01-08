@@ -18,6 +18,9 @@ class TodoApp {
         this.themeToggleBtn = document.getElementById('theme-toggle');
         this.themeIcon = document.querySelector('.theme-icon');
         this.fontSelect = document.getElementById('font-select');
+        this.notification = document.getElementById('notification');
+        this.notificationMessage = document.getElementById('notification-message');
+        this.notificationClose = document.getElementById('notification-close');
 
         // State
         this.todos = [];
@@ -26,8 +29,8 @@ class TodoApp {
         this.currentFont = 'pixelify';
 
         // Performance optimizations
-        this._escapeDiv = document.createElement('div'); // Reusable div for HTML escaping
-        this._todayTimestamp = null; // Cache today's timestamp
+        this.cachedEscapeDiv = document.createElement('div'); // Reusable div for HTML escaping
+        this.cachedTodayTimestamp = null; // Cache today's timestamp
 
         // Initialize
         this.loadTodos();
@@ -100,6 +103,11 @@ class TodoApp {
                     this.deleteTodo(todoId);
                 }
             });
+        }
+
+        // Close notification
+        if (this.notificationClose) {
+            this.notificationClose.addEventListener('click', () => this.hideNotification());
         }
     }
 
@@ -195,21 +203,33 @@ class TodoApp {
                 filtered = [...this.todos];
         }
 
-        // Sort: overdue first, then due today, then by due date, then no due date
-        return filtered.sort((a, b) => {
-            // Completed tasks go to the bottom
-            if (a.completed !== b.completed) {
-                return a.completed ? 1 : -1;
-            }
+        // Sort: completed last, then by due date (earliest first), then no due date
+        return filtered.sort((a, b) => this.compareTodos(a, b));
+    }
 
-            // If both have no due date, maintain original order
-            if (!a.dueDate && !b.dueDate) return 0;
-            if (!a.dueDate) return 1;
-            if (!b.dueDate) return -1;
+    /**
+     * Compare two todos for sorting
+     * @param {Object} a - First todo
+     * @param {Object} b - Second todo
+     * @returns {number} Sort order (-1, 0, 1)
+     */
+    compareTodos(a, b) {
+        // Completed tasks go to the bottom
+        if (a.completed !== b.completed) {
+            return a.completed ? 1 : -1;
+        }
 
-            // Sort by due date (earlier dates first)
-            return a.dueDate.localeCompare(b.dueDate);
-        });
+        // Both have no due date - maintain original order
+        if (!a.dueDate && !b.dueDate) {
+            return 0;
+        }
+
+        // One has no due date - it goes after ones with due dates
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+
+        // Both have due dates - sort by date (earlier first)
+        return a.dueDate.localeCompare(b.dueDate);
     }
 
     /**
@@ -217,7 +237,7 @@ class TodoApp {
      */
     render() {
         // Cache today's timestamp for this render cycle
-        this._updateTodayTimestamp();
+        this.updateTodayTimestamp();
 
         const filteredTodos = this.getFilteredTodos();
 
@@ -242,10 +262,10 @@ class TodoApp {
     /**
      * Update cached today timestamp (called once per render)
      */
-    _updateTodayTimestamp() {
+    updateTodayTimestamp() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        this._todayTimestamp = today.getTime();
+        this.cachedTodayTimestamp = today.getTime();
     }
 
     /**
@@ -271,7 +291,7 @@ class TodoApp {
 
         this.todoList.innerHTML = todos.map(todo => {
             // Parse due date once and get both status and formatted string
-            const dueDateInfo = this._processDueDate(todo.dueDate);
+            const dueDateInfo = this.processDueDate(todo.dueDate);
             const dueDateHtml = dueDateInfo.formatted ? `
                 <div class="todo-due-date ${dueDateInfo.status}">
                     DUE: ${dueDateInfo.formatted}
@@ -308,7 +328,12 @@ class TodoApp {
         try {
             localStorage.setItem('retro-todos', JSON.stringify(this.todos));
         } catch (e) {
-            console.error('Failed to save todos:', e);
+            console.error('Failed to save todos:', {
+                error: e.message,
+                todosCount: this.todos.length,
+                timestamp: new Date().toISOString()
+            });
+            this.showNotification('Failed to save tasks. Your changes may not persist.', 'error', 6000);
         }
     }
 
@@ -320,8 +345,12 @@ class TodoApp {
             const stored = localStorage.getItem('retro-todos');
             this.todos = stored ? JSON.parse(stored) : [];
         } catch (e) {
-            console.error('Failed to load todos:', e);
+            console.error('Failed to load todos:', {
+                error: e.message,
+                timestamp: new Date().toISOString()
+            });
             this.todos = [];
+            this.showNotification('Failed to load saved tasks. Starting fresh.', 'warning', 5000);
         }
     }
 
@@ -330,7 +359,7 @@ class TodoApp {
      * @param {string} dueDate - Due date in YYYY-MM-DD format
      * @returns {Object} Object with status and formatted properties
      */
-    _processDueDate(dueDate) {
+    processDueDate(dueDate) {
         if (!dueDate) {
             return { status: '', formatted: null };
         }
@@ -340,19 +369,28 @@ class TodoApp {
 
         // Determine status using cached today timestamp
         let status = '';
-        if (dueTimestamp < this._todayTimestamp) {
+        if (dueTimestamp < this.cachedTodayTimestamp) {
             status = 'overdue';
-        } else if (dueTimestamp === this._todayTimestamp) {
+        } else if (dueTimestamp === this.cachedTodayTimestamp) {
             status = 'due-today';
         }
 
         // Format date
-        const month = (due.getMonth() + 1).toString().padStart(2, '0');
-        const day = due.getDate().toString().padStart(2, '0');
-        const year = due.getFullYear();
-        const formatted = `${month}/${day}/${year}`;
+        const formatted = this.formatDateObject(due);
 
         return { status, formatted };
+    }
+
+    /**
+     * Format a Date object to MM/DD/YYYY string
+     * @param {Date} date - Date object to format
+     * @returns {string} Formatted date string
+     */
+    formatDateObject(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
     }
 
     /**
@@ -362,10 +400,7 @@ class TodoApp {
      */
     formatDueDate(dueDate) {
         const date = new Date(dueDate + 'T00:00:00');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${month}/${day}/${year}`;
+        return this.formatDateObject(date);
     }
 
     /**
@@ -375,8 +410,8 @@ class TodoApp {
      */
     escapeHtml(text) {
         // Use cached div instead of creating new one each time
-        this._escapeDiv.textContent = text;
-        return this._escapeDiv.innerHTML;
+        this.cachedEscapeDiv.textContent = text;
+        return this.cachedEscapeDiv.innerHTML;
     }
 
     /**
@@ -412,7 +447,12 @@ class TodoApp {
         try {
             localStorage.setItem('retro-theme', this.currentTheme);
         } catch (e) {
-            console.error('Failed to save theme:', e);
+            console.error('Failed to save theme:', {
+                error: e.message,
+                theme: this.currentTheme,
+                timestamp: new Date().toISOString()
+            });
+            this.showNotification('Failed to save theme preference.', 'warning', 3000);
         }
     }
 
@@ -425,7 +465,10 @@ class TodoApp {
             this.currentTheme = stored || 'light';
             this.applyTheme();
         } catch (e) {
-            console.error('Failed to load theme:', e);
+            console.error('Failed to load theme:', {
+                error: e.message,
+                timestamp: new Date().toISOString()
+            });
             this.currentTheme = 'light';
         }
     }
@@ -462,7 +505,12 @@ class TodoApp {
         try {
             localStorage.setItem('retro-font', this.currentFont);
         } catch (e) {
-            console.error('Failed to save font:', e);
+            console.error('Failed to save font:', {
+                error: e.message,
+                font: this.currentFont,
+                timestamp: new Date().toISOString()
+            });
+            this.showNotification('Failed to save font preference.', 'warning', 3000);
         }
     }
 
@@ -475,7 +523,10 @@ class TodoApp {
             this.currentFont = stored || 'pixelify';
             this.applyFont();
         } catch (e) {
-            console.error('Failed to load font:', e);
+            console.error('Failed to load font:', {
+                error: e.message,
+                timestamp: new Date().toISOString()
+            });
             this.currentFont = 'pixelify';
         }
     }
@@ -485,7 +536,7 @@ class TodoApp {
      */
     exportToMarkdown() {
         if (this.todos.length === 0) {
-            alert('No tasks to export!');
+            this.showNotification('No tasks to export!', 'warning', 3000);
             return;
         }
 
@@ -539,6 +590,54 @@ class TodoApp {
 
         // Cleanup
         URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Show notification message to user
+     * @param {string} message - Message to display
+     * @param {string} type - Type of notification: 'info', 'success', 'warning', 'error'
+     * @param {number} duration - Duration in milliseconds (0 = manual close only)
+     */
+    showNotification(message, type = 'info', duration = 4000) {
+        if (!this.notification || !this.notificationMessage) return;
+
+        // Clear any existing timeout
+        if (this.notificationTimeout) {
+            clearTimeout(this.notificationTimeout);
+        }
+
+        // Set message
+        this.notificationMessage.textContent = message;
+
+        // Remove previous type classes
+        this.notification.classList.remove('error', 'success', 'warning', 'info');
+
+        // Add new type class if not default
+        if (type !== 'info') {
+            this.notification.classList.add(type);
+        }
+
+        // Show notification
+        this.notification.classList.remove('hidden');
+
+        // Auto-hide after duration if specified
+        if (duration > 0) {
+            this.notificationTimeout = setTimeout(() => {
+                this.hideNotification();
+            }, duration);
+        }
+    }
+
+    /**
+     * Hide notification
+     */
+    hideNotification() {
+        if (this.notification) {
+            this.notification.classList.add('hidden');
+        }
+        if (this.notificationTimeout) {
+            clearTimeout(this.notificationTimeout);
+        }
     }
 }
 

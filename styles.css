@@ -119,10 +119,82 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* === NOTIFICATION TOAST === */
+.notification {
+    position: fixed;
+    top: var(--space-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-window);
+    border: 2px solid var(--border-dark);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    z-index: 1000;
+    max-width: 90%;
+    animation: slideDown 0.3s ease-out;
+}
+
+.notification.hidden {
+    display: none;
+}
+
+.notification.error {
+    border-color: var(--delete-color);
+    background: var(--bg-window);
+}
+
+.notification.success {
+    border-color: #27c93f;
+}
+
+.notification.warning {
+    border-color: var(--due-today-color);
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    flex: 1;
+}
+
+.notification-close {
+    background: transparent;
+    border: 1px solid var(--border-mid);
+    color: var(--text-primary);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.notification-close:hover {
+    background: var(--bg-button-hover);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
 /* === DESKTOP & WINDOW === */
 .desktop {
     width: 100%;
-    max-width: 560px;
+    /* max-width set in responsive section for desktop */
 }
 
 .window {
@@ -157,6 +229,7 @@ body {
 }
 
 .title-bar-button {
+    /* Classic Mac window control size - small circular buttons */
     width: 12px;
     height: 12px;
     background: var(--bg-button);
@@ -482,6 +555,7 @@ body[data-theme="dark"] .stats-value {
     background: var(--bg-input);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
+    /* Desktop dimensions - shows ~10-13 tasks without scrolling */
     min-height: 300px;
     max-height: 400px;
     overflow-y: auto;
@@ -684,66 +758,115 @@ body[data-theme="dark"] .todo-checkbox.checked {
     background: var(--text-muted);
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 640px) {
+/* === RESPONSIVE - MOBILE FIRST === */
+/* Base styles are mobile-optimized */
+
+/* Default mobile styles */
+body {
+    padding: var(--space-sm);
+}
+
+.window-body {
+    padding: var(--space-md);
+}
+
+.app-header {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+}
+
+.app-title {
+    font-size: var(--font-size-lg);
+}
+
+.input-wrapper {
+    flex-direction: column;
+}
+
+.btn, .btn-primary {
+    width: 100%;
+    min-height: 44px;
+}
+
+.filter-btn {
+    min-height: 44px;
+}
+
+.todo-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+.todo-delete {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.actions-section {
+    grid-template-columns: 1fr;
+}
+
+.list-container {
+    /* Mobile dimensions - smaller to fit typical mobile screens */
+    min-height: 250px;
+    max-height: 350px;
+}
+
+/* Tablet and up - enhance from mobile base */
+@media (min-width: 641px) {
     body {
-        padding: var(--space-sm);
+        padding: var(--space-lg);
     }
 
     .window-body {
-        padding: var(--space-md);
+        padding: var(--space-lg);
     }
 
     .app-header {
-        margin-bottom: var(--space-md);
-        padding-bottom: var(--space-md);
+        margin-bottom: var(--space-lg);
+        padding-bottom: var(--space-lg);
     }
 
     .app-title {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-xl);
     }
 
     .input-wrapper {
-        flex-direction: column;
+        flex-direction: row;
     }
 
     .btn, .btn-primary {
-        width: 100%;
-        min-height: 44px;
-    }
-
-    .filter-btn {
-        min-height: 44px;
+        width: auto;
     }
 
     .todo-checkbox {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
     }
 
     .todo-delete {
-        min-width: 44px;
-        min-height: 44px;
+        min-width: auto;
+        min-height: auto;
     }
 
     .actions-section {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .list-container {
-        min-height: 250px;
-        max-height: 350px;
+        min-height: 300px;
+        max-height: 400px;
     }
-}
 
-/* Medium screens - tablets */
-@media (min-width: 641px) and (max-width: 1024px) {
     .desktop {
         max-width: 640px;
     }
+}
 
-    .btn, .filter-btn {
-        min-height: 44px;
+/* Desktop and up - further enhancements */
+@media (min-width: 1025px) {
+    .desktop {
+        max-width: 560px;
     }
 }
 
