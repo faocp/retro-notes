@@ -36,9 +36,12 @@
     --overdue-color: #ff3b30;
     --due-today-color: #ff9500;
 
-    /* Typography - Pixelify Sans */
-    --font-primary: "Pixelify Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --font-mono: "Pixelify Sans", "SF Mono", "Monaco", "Consolas", monospace;
+    /* Typography - Default: Pixelify Sans */
+    --font-pixelify: "Pixelify Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-doto: "Doto", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-jacquard: "Jacquard 12", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-primary: var(--font-pixelify);
+    --font-mono: var(--font-pixelify);
     --font-size-xs: 9px;
     --font-size-sm: 11px;
     --font-size-md: 13px;
@@ -81,6 +84,17 @@ body[data-theme="dark"] {
     --input-focus: #0a1a0a;
     --item-hover: #151515;
     --delete-color: #ff3b30;
+}
+
+/* Font Variations */
+body[data-font="doto"] {
+    --font-primary: var(--font-doto);
+    --font-mono: var(--font-doto);
+}
+
+body[data-font="jacquard"] {
+    --font-primary: var(--font-jacquard);
+    --font-mono: var(--font-jacquard);
 }
 
 body {
@@ -189,13 +203,21 @@ body {
     letter-spacing: 0.5px;
 }
 
+/* === SETTINGS CONTAINER === */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
 /* === THEME TOGGLE === */
 .theme-toggle-container {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    margin-top: var(--space-md);
 }
 
 .theme-label {
@@ -226,6 +248,46 @@ body {
 .theme-icon {
     font-size: var(--font-size-sm);
     user-select: none;
+}
+
+/* === FONT SELECT === */
+.font-select-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.font-label {
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.font-select {
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    background: var(--bg-button);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.font-select:hover {
+    background: var(--bg-button-hover);
+}
+
+.font-select:focus {
+    border-color: var(--accent-color);
+    background: var(--input-focus);
 }
 
 /* === ADD TODO SECTION === */

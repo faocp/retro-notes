@@ -17,11 +17,13 @@ class TodoApp {
         this.filterBtns = document.querySelectorAll('.filter-btn');
         this.themeToggleBtn = document.getElementById('theme-toggle');
         this.themeIcon = document.querySelector('.theme-icon');
+        this.fontSelect = document.getElementById('font-select');
 
         // State
         this.todos = [];
         this.currentFilter = 'all';
         this.currentTheme = 'light';
+        this.currentFont = 'pixelify';
 
         // Performance optimizations
         this._escapeDiv = document.createElement('div'); // Reusable div for HTML escaping
@@ -30,6 +32,7 @@ class TodoApp {
         // Initialize
         this.loadTodos();
         this.loadTheme();
+        this.loadFont();
         this.attachEventListeners();
         this.render();
     }
@@ -65,6 +68,11 @@ class TodoApp {
         // Theme toggle
         if (this.themeToggleBtn) {
             this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+        }
+
+        // Font select
+        if (this.fontSelect) {
+            this.fontSelect.addEventListener('change', (e) => this.changeFont(e.target.value));
         }
 
         // Filter buttons
@@ -407,6 +415,56 @@ class TodoApp {
         } catch (e) {
             console.error('Failed to load theme:', e);
             this.currentTheme = 'light';
+        }
+    }
+
+    /**
+     * Change the font
+     * @param {string} font - Font identifier ('pixelify', 'doto', or 'jacquard')
+     */
+    changeFont(font) {
+        this.currentFont = font;
+        this.applyFont();
+        this.saveFont();
+    }
+
+    /**
+     * Apply the current font to the document
+     */
+    applyFont() {
+        if (this.currentFont === 'pixelify') {
+            document.body.removeAttribute('data-font');
+        } else {
+            document.body.setAttribute('data-font', this.currentFont);
+        }
+
+        if (this.fontSelect) {
+            this.fontSelect.value = this.currentFont;
+        }
+    }
+
+    /**
+     * Save font preference to localStorage
+     */
+    saveFont() {
+        try {
+            localStorage.setItem('retro-font', this.currentFont);
+        } catch (e) {
+            console.error('Failed to save font:', e);
+        }
+    }
+
+    /**
+     * Load font preference from localStorage
+     */
+    loadFont() {
+        try {
+            const stored = localStorage.getItem('retro-font');
+            this.currentFont = stored || 'pixelify';
+            this.applyFont();
+        } catch (e) {
+            console.error('Failed to load font:', e);
+            this.currentFont = 'pixelify';
         }
     }
 
