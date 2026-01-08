@@ -83,22 +83,24 @@ class TodoApp {
         });
 
         // Event delegation for todo list
-        this.todoList.addEventListener('click', (e) => {
-            const todoItem = e.target.closest('.todo-item');
-            if (!todoItem) return;
+        if (this.todoList) {
+            this.todoList.addEventListener('click', (e) => {
+                const todoItem = e.target.closest('.todo-item');
+                if (!todoItem) return;
 
-            const todoId = parseInt(todoItem.dataset.id);
+                const todoId = parseInt(todoItem.dataset.id);
 
-            // Toggle complete
-            if (e.target.classList.contains('todo-checkbox')) {
-                this.toggleTodo(todoId);
-            }
+                // Toggle complete
+                if (e.target.classList.contains('todo-checkbox')) {
+                    this.toggleTodo(todoId);
+                }
 
-            // Delete todo
-            if (e.target.classList.contains('todo-delete')) {
-                this.deleteTodo(todoId);
-            }
-        });
+                // Delete todo
+                if (e.target.classList.contains('todo-delete')) {
+                    this.deleteTodo(todoId);
+                }
+            });
+        }
     }
 
     /**
@@ -221,10 +223,16 @@ class TodoApp {
 
         // Show/hide empty state
         if (this.todos.length === 0) {
-            this.emptyState.classList.remove('hidden');
-            this.todoList.innerHTML = '';
+            if (this.emptyState) {
+                this.emptyState.classList.remove('hidden');
+            }
+            if (this.todoList) {
+                this.todoList.innerHTML = '';
+            }
         } else {
-            this.emptyState.classList.add('hidden');
+            if (this.emptyState) {
+                this.emptyState.classList.add('hidden');
+            }
             this.renderTodoList(filteredTodos);
         }
 
@@ -245,6 +253,8 @@ class TodoApp {
      * @param {Array} todos - Todos to render
      */
     renderTodoList(todos) {
+        if (!this.todoList) return;
+
         if (todos.length === 0 && this.todos.length > 0) {
             // Filter returned no results
             this.todoList.innerHTML = `
@@ -285,8 +295,10 @@ class TodoApp {
      * Update the active task counter
      */
     updateTaskCount() {
-        const activeCount = this.todos.filter(t => !t.completed).length;
-        this.taskCount.textContent = activeCount;
+        if (this.taskCount) {
+            const activeCount = this.todos.filter(t => !t.completed).length;
+            this.taskCount.textContent = activeCount;
+        }
     }
 
     /**
