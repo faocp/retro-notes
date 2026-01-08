@@ -39,7 +39,8 @@
     /* Typography - Default: Pixelify Sans */
     --font-pixelify: "Pixelify Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --font-doto: "Doto", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --font-jersey: "Jersey 10", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-silkscreen: "Silkscreen", -apple-system, BlinkMacSystemFont, system-ui, monospace;
+    --font-ubuntu-mono: "Ubuntu Mono", -apple-system, BlinkMacSystemFont, system-ui, monospace;
     --font-primary: var(--font-pixelify);
     --font-mono: var(--font-pixelify);
     --font-size-xs: 9px;
@@ -93,9 +94,14 @@ body[data-font="doto"] {
     font-weight: 600;
 }
 
-body[data-font="jersey"] {
-    --font-primary: var(--font-jersey);
-    --font-mono: var(--font-jersey);
+body[data-font="silkscreen"] {
+    --font-primary: var(--font-silkscreen);
+    --font-mono: var(--font-silkscreen);
+}
+
+body[data-font="ubuntu-mono"] {
+    --font-primary: var(--font-ubuntu-mono);
+    --font-mono: var(--font-ubuntu-mono);
 }
 
 body {
