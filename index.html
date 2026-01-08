@@ -26,7 +26,7 @@
             <div class="window-body">
                 <!-- Header Section -->
                 <header class="app-header">
-                    <h1 class="app-title">TASK MANAGER v1.0</h1>
+                    <h1 class="app-title">TASK MANAGER v1.1</h1>
                     <p class="app-subtitle">C:\TASKS\TODO.EXE</p>
                     <div class="theme-toggle-container">
                         <span class="theme-label">THEME:</span>
@@ -48,6 +48,16 @@
                                 placeholder="Enter task description..."
                                 maxlength="100"
                                 autocomplete="off"
+                            >
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="due-date-input" class="input-label">DUE DATE: <span class="optional-label">(OPTIONAL)</span></label>
+                        <div class="input-wrapper">
+                            <input
+                                type="date"
+                                id="due-date-input"
+                                class="date-input"
                             >
                             <button id="add-btn" class="btn btn-primary">ADD</button>
                         </div>
