@@ -1,0 +1,454 @@
+/* ============================================
+   RETRO TODO APP - CSS
+   Clean, minimal retro computer aesthetic
+   ============================================ */
+
+/* === RESET & BASE === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Retro Color Palette */
+    --bg-desktop: #008080;
+    --bg-window: #c0c0c0;
+    --bg-titlebar: #000080;
+    --bg-input: #ffffff;
+    --bg-button: #c0c0c0;
+    --bg-button-hover: #dfdfdf;
+    --bg-button-active: #a0a0a0;
+
+    --text-primary: #000000;
+    --text-inverse: #ffffff;
+    --text-muted: #808080;
+
+    --border-light: #ffffff;
+    --border-dark: #000000;
+    --border-mid-light: #dfdfdf;
+    --border-mid-dark: #808080;
+
+    --shadow-inset: inset -1px -1px 0 var(--border-dark),
+                    inset 1px 1px 0 var(--border-mid-dark),
+                    inset -2px -2px 0 var(--border-mid-dark),
+                    inset 2px 2px 0 var(--border-light);
+
+    --shadow-outset: inset -1px -1px 0 var(--border-mid-dark),
+                     inset 1px 1px 0 var(--border-light),
+                     inset -2px -2px 0 var(--border-dark),
+                     inset 2px 2px 0 var(--border-mid-light);
+
+    /* Typography */
+    --font-primary: 'Press Start 2P', monospace;
+    --font-size-xs: 6px;
+    --font-size-sm: 8px;
+    --font-size-md: 10px;
+    --font-size-lg: 12px;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-desktop);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+}
+
+/* === DESKTOP & WINDOW === */
+.desktop {
+    width: 100%;
+    max-width: 600px;
+}
+
+.window {
+    background: var(--bg-window);
+    box-shadow: var(--shadow-outset);
+    border: 2px solid var(--border-mid-light);
+}
+
+/* === TITLE BAR === */
+.title-bar {
+    background: var(--bg-titlebar);
+    padding: var(--space-xs) var(--space-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border-dark);
+}
+
+.title-bar-text {
+    color: var(--text-inverse);
+    font-size: var(--font-size-md);
+    letter-spacing: 1px;
+}
+
+.title-bar-controls {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.title-bar-button {
+    width: 20px;
+    height: 20px;
+    background: var(--bg-button);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+}
+
+.title-bar-button:hover {
+    background: var(--bg-button-hover);
+}
+
+.title-bar-button:active {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+}
+
+/* === WINDOW BODY === */
+.window-body {
+    padding: var(--space-md);
+}
+
+/* === HEADER === */
+.app-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 2px dashed var(--border-mid-dark);
+}
+
+.app-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-sm);
+    letter-spacing: 2px;
+}
+
+.app-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+/* === ADD TODO SECTION === */
+.add-todo-section {
+    margin-bottom: var(--space-lg);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.input-label {
+    font-size: var(--font-size-sm);
+    letter-spacing: 1px;
+}
+
+.input-wrapper {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.todo-input {
+    flex: 1;
+    padding: var(--space-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    background: var(--bg-input);
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: var(--shadow-inset);
+    outline: none;
+}
+
+.todo-input:focus {
+    background: #ffffcc;
+}
+
+/* === BUTTONS === */
+.btn {
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    background: var(--bg-button);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: none;
+}
+
+.btn:hover {
+    background: var(--bg-button-hover);
+}
+
+.btn:active {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    background: var(--bg-button-active);
+}
+
+.btn-primary {
+    background: var(--bg-titlebar);
+    color: var(--text-inverse);
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: #0000a0;
+}
+
+.btn-primary:active {
+    background: #000060;
+}
+
+.btn-secondary {
+    width: 100%;
+}
+
+/* === STATS SECTION === */
+.stats-section {
+    margin-bottom: var(--space-md);
+}
+
+.stats-box {
+    background: var(--bg-input);
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: var(--shadow-inset);
+    padding: var(--space-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats-label {
+    font-size: var(--font-size-sm);
+}
+
+.stats-value {
+    font-size: var(--font-size-md);
+    font-weight: bold;
+    background: var(--bg-titlebar);
+    color: var(--text-inverse);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border-dark);
+}
+
+/* === FILTER SECTION === */
+.filter-section {
+    margin-bottom: var(--space-md);
+}
+
+.filter-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+}
+
+.filter-btn {
+    padding: var(--space-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    background: var(--bg-button);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.filter-btn:hover {
+    background: var(--bg-button-hover);
+}
+
+.filter-btn.active {
+    background: var(--bg-titlebar);
+    color: var(--text-inverse);
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: var(--shadow-inset);
+}
+
+/* === TODO LIST === */
+.todo-list-section {
+    margin-bottom: var(--space-lg);
+}
+
+.list-container {
+    background: var(--bg-input);
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: var(--shadow-inset);
+    min-height: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.todo-list {
+    list-style: none;
+}
+
+.todo-item {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-mid-dark);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: var(--bg-input);
+}
+
+.todo-item:hover {
+    background: #f0f0f0;
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+}
+
+.todo-item.hidden {
+    display: none;
+}
+
+/* Custom Checkbox */
+.todo-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-dark);
+    background: var(--bg-input);
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: var(--shadow-inset);
+}
+
+.todo-checkbox.checked::after {
+    content: '×';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.todo-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.todo-delete {
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    background: #c00000;
+    color: var(--text-inverse);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.todo-delete:hover {
+    background: #e00000;
+}
+
+.todo-delete:active {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    background: #a00000;
+}
+
+/* === EMPTY STATE === */
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: var(--space-lg);
+}
+
+.empty-state.hidden {
+    display: none;
+}
+
+.ascii-art {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.8;
+}
+
+/* === FOOTER === */
+.app-footer {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 2px dashed var(--border-mid-dark);
+    text-align: center;
+}
+
+.footer-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+/* === SCROLLBAR STYLING === */
+.list-container::-webkit-scrollbar {
+    width: 16px;
+}
+
+.list-container::-webkit-scrollbar-track {
+    background: var(--bg-window);
+    border-left: 2px solid var(--border-dark);
+}
+
+.list-container::-webkit-scrollbar-thumb {
+    background: var(--bg-button);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+}
+
+.list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--bg-button-hover);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 640px) {
+    :root {
+        --font-size-xs: 5px;
+        --font-size-sm: 7px;
+        --font-size-md: 8px;
+        --font-size-lg: 10px;
+    }
+
+    .input-wrapper {
+        flex-direction: column;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+}
