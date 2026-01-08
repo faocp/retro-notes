@@ -23,6 +23,10 @@ class TodoApp {
         this.currentFilter = 'all';
         this.currentTheme = 'light';
 
+        // Performance optimizations
+        this._escapeDiv = document.createElement('div'); // Reusable div for HTML escaping
+        this._todayTimestamp = null; // Cache today's timestamp
+
         // Initialize
         this.loadTodos();
         this.loadTheme();
@@ -169,20 +173,42 @@ class TodoApp {
      * @returns {Array} Filtered todos
      */
     getFilteredTodos() {
+        let filtered;
         switch (this.currentFilter) {
             case 'active':
-                return this.todos.filter(t => !t.completed);
+                filtered = this.todos.filter(t => !t.completed);
+                break;
             case 'completed':
-                return this.todos.filter(t => t.completed);
+                filtered = this.todos.filter(t => t.completed);
+                break;
             default:
-                return this.todos;
+                filtered = [...this.todos];
         }
+
+        // Sort: overdue first, then due today, then by due date, then no due date
+        return filtered.sort((a, b) => {
+            // Completed tasks go to the bottom
+            if (a.completed !== b.completed) {
+                return a.completed ? 1 : -1;
+            }
+
+            // If both have no due date, maintain original order
+            if (!a.dueDate && !b.dueDate) return 0;
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+
+            // Sort by due date (earlier dates first)
+            return a.dueDate.localeCompare(b.dueDate);
+        });
     }
 
     /**
      * Render the todo list and update UI
      */
     render() {
+        // Cache today's timestamp for this render cycle
+        this._updateTodayTimestamp();
+
         const filteredTodos = this.getFilteredTodos();
 
         // Show/hide empty state
@@ -195,6 +221,15 @@ class TodoApp {
         }
 
         this.updateTaskCount();
+    }
+
+    /**
+     * Update cached today timestamp (called once per render)
+     */
+    _updateTodayTimestamp() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        this._todayTimestamp = today.getTime();
     }
 
     /**
@@ -217,15 +252,16 @@ class TodoApp {
         }
 
         this.todoList.innerHTML = todos.map(todo => {
-            const dueDateStatus = this.getDueDateStatus(todo.dueDate);
-            const dueDateHtml = todo.dueDate ? `
-                <div class="todo-due-date ${dueDateStatus}">
-                    DUE: ${this.formatDueDate(todo.dueDate)}
+            // Parse due date once and get both status and formatted string
+            const dueDateInfo = this._processDueDate(todo.dueDate);
+            const dueDateHtml = dueDateInfo.formatted ? `
+                <div class="todo-due-date ${dueDateInfo.status}">
+                    DUE: ${dueDateInfo.formatted}
                 </div>
             ` : '';
 
             return `
-                <li class="todo-item ${todo.completed ? 'completed' : ''} ${dueDateStatus}" data-id="${todo.id}">
+                <li class="todo-item ${todo.completed ? 'completed' : ''} ${dueDateInfo.status}" data-id="${todo.id}">
                     <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" role="checkbox" aria-checked="${todo.completed}"></div>
                     <div class="todo-content">
                         <span class="todo-text">${this.escapeHtml(todo.text)}</span>
@@ -270,29 +306,37 @@ class TodoApp {
     }
 
     /**
-     * Get due date status (overdue, due-today, or empty string)
+     * Process due date - parse once and return status and formatted string
      * @param {string} dueDate - Due date in YYYY-MM-DD format
-     * @returns {string} Status class
+     * @returns {Object} Object with status and formatted properties
      */
-    getDueDateStatus(dueDate) {
-        if (!dueDate) return '';
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const due = new Date(dueDate + 'T00:00:00');
-
-        if (due < today) {
-            return 'overdue';
-        } else if (due.getTime() === today.getTime()) {
-            return 'due-today';
+    _processDueDate(dueDate) {
+        if (!dueDate) {
+            return { status: '', formatted: null };
         }
 
-        return '';
+        const due = new Date(dueDate + 'T00:00:00');
+        const dueTimestamp = due.getTime();
+
+        // Determine status using cached today timestamp
+        let status = '';
+        if (dueTimestamp < this._todayTimestamp) {
+            status = 'overdue';
+        } else if (dueTimestamp === this._todayTimestamp) {
+            status = 'due-today';
+        }
+
+        // Format date
+        const month = (due.getMonth() + 1).toString().padStart(2, '0');
+        const day = due.getDate().toString().padStart(2, '0');
+        const year = due.getFullYear();
+        const formatted = `${month}/${day}/${year}`;
+
+        return { status, formatted };
     }
 
     /**
-     * Format due date for display
+     * Format due date for display (used in export)
      * @param {string} dueDate - Due date in YYYY-MM-DD format
      * @returns {string} Formatted date string
      */
@@ -310,9 +354,9 @@ class TodoApp {
      * @returns {string} Escaped text
      */
     escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        // Use cached div instead of creating new one each time
+        this._escapeDiv.textContent = text;
+        return this._escapeDiv.innerHTML;
     }
 
     /**
